@@ -1,1 +1,1 @@
-# Harry-Potter-Hangman
+# A Harry Potter-themed adventure in which the user is Sorted into one of the four Hogwarts Houses and has the chance to guess the identity of any number of mystery characters and score house points in a hangman-style game
