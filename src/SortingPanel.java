@@ -15,7 +15,7 @@ import javax.swing.JButton;
 
 class SortingPanel extends GamePanel {
 	Graphics gTemp;
-	Image sortingBackground = new ImageIcon("/home/julienne/nellemaple/Coding/Hangman/src/GUIVersion/HPHangman/src/SortingHatBackground.jpg").getImage();
+	Image sortingBackground = new ImageIcon("/resources/SortingHatBackground.jpg").getImage();
 	public static int paintTimes = 0;
 	JButton jbtOk;
 	String choice;
@@ -137,7 +137,7 @@ class SortingPanel extends GamePanel {
 	}
 
 	private void drawChoice(Graphics gTemp) {
-		Image emblem = new ImageIcon("/home/julienne/nellemaple/Coding/Hangman/src/GUIVersion/HPHangman/src/Emblem.png").getImage();
+		Image emblem = new ImageIcon("/resources/Emblem.png").getImage();
 		gTemp.drawImage(sortingBackground, 0, 0, 500, 300, this);
 		gTemp.drawImage(emblem, 259, 19, 211, 225, this); 
 		
@@ -159,7 +159,7 @@ class SortingPanel extends GamePanel {
 	}
 
 	private void drawHat(Graphics gTemp) {
-		Image imgPartyPopper = new ImageIcon("/home/julienne/nellemaple/Coding/Hangman/src/GUIVersion/HPHangman/src/PartyPoppers.png").getImage().getScaledInstance(45, -1, 0);
+		Image imgPartyPopper = new ImageIcon("/resources/PartyPoppers.png").getImage().getScaledInstance(45, -1, 0);
 		JButton jbtParty = new JButton(new ImageIcon(imgPartyPopper));
 		jbtParty.setBounds(400, 200, 45, 45);
 
@@ -182,7 +182,7 @@ class SortingPanel extends GamePanel {
 		add(jbtParty);
 
 		gTemp.drawImage(sortingBackground, 0, 0, 630, 370, this);
-		Image speechBubbleImage = new ImageIcon("/home/julienne/nellemaple/Coding/Hangman/src/GUIVersion/HPHangman/src/SpeechBubble.png").getImage();
+		Image speechBubbleImage = new ImageIcon("/resources/SpeechBubble.png").getImage();
 		gTemp.drawImage(speechBubbleImage, 129, 20, 300, 200, this);
 
 		String[] houses = {"RAVENCLAW", "GRYFFINDOR", "HUFFLEPUFF", "SLYTHERIN"};

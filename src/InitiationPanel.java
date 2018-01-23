@@ -71,7 +71,7 @@ class InitiationPanel extends GamePanel {
 	}
 
 	private void doDrawing(Graphics gTemp) {
-		Image parchment = new ImageIcon("/home/julienne/nellemaple/Coding/Hangman/src/GUIVersion/HPHangman/src/Parchment.jpg").getImage();
+		Image parchment = new ImageIcon("/resources/Parchment.jpg").getImage();
 		gTemp.drawImage(parchment, 0, 0, this);
 		gTemp.setFont(new Font("TimesRoman", Font.ITALIC, 24)); 
 

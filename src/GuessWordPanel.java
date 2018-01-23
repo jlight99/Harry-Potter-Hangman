@@ -14,7 +14,7 @@ import javax.swing.JTextField;
 
 class GuessWordPanel extends GamePanel {
 	private Graphics gTemp;
-	private Image parchmentImage = new ImageIcon("/home/julienne/nellemaple/Coding/Hangman/src/GUIVersion/HPHangman/src/Parchment.jpg").getImage();
+	private Image parchmentImage = new ImageIcon("/resources/Parchment.jpg").getImage();
 	public static Character chosenOne; 
 	private String word;
 	private int wordLength;

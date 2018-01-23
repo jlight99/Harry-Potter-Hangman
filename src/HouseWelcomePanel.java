@@ -60,14 +60,14 @@ class HouseWelcomePanel extends GamePanel {
 	}
 
 	public void drawBackground(Graphics gTemp) {	
-		Image gryffindorImage = new ImageIcon("/home/julienne/nellemaple/Coding/Hangman/src/GUIVersion/HPHangman/src/Gryffindor.png").getImage();
-		Image gryffindorRedImage = new ImageIcon("/home/julienne/nellemaple/Coding/Hangman/src/GUIVersion/HPHangman/src/GryffindorRed.jpg").getImage();
-		Image ravenclawImage = new ImageIcon("/home/julienne/nellemaple/Coding/Hangman/src/GUIVersion/HPHangman/src/Ravenclaw.png").getImage();
-		Image ravenclawBlueImage = new ImageIcon("/home/julienne/nellemaple/Coding/Hangman/src/GUIVersion/HPHangman/src/RavenclawBlue.jpg").getImage();
-		Image hufflepuffImage = new ImageIcon("/home/julienne/nellemaple/Coding/Hangman/src/GUIVersion/HPHangman/src/Hufflepuff.png").getImage();
-		Image hufflepuffYellowImage = new ImageIcon("/home/julienne/nellemaple/Coding/Hangman/src/GUIVersion/HPHangman/src/HufflepuffYellow.jpg").getImage();
-		Image slytherinImage = new ImageIcon("/home/julienne/nellemaple/Coding/Hangman/src/GUIVersion/HPHangman/src/Slytherin.png").getImage();
-		Image slytherinGreenImage = new ImageIcon("/home/julienne/nellemaple/Coding/Hangman/src/GUIVersion/HPHangman/src/SlytherinGreen.jpg").getImage();
+		Image gryffindorImage = new ImageIcon("/resources/Gryffindor.png").getImage();
+		Image gryffindorRedImage = new ImageIcon("/resources/GryffindorRed.jpg").getImage();
+		Image ravenclawImage = new ImageIcon("/resources/Ravenclaw.png").getImage();
+		Image ravenclawBlueImage = new ImageIcon("/resources/RavenclawBlue.jpg").getImage();
+		Image hufflepuffImage = new ImageIcon("/resources/Hufflepuff.png").getImage();
+		Image hufflepuffYellowImage = new ImageIcon("/resources/HufflepuffYellow.jpg").getImage();
+		Image slytherinImage = new ImageIcon("/resources/Slytherin.png").getImage();
+		Image slytherinGreenImage = new ImageIcon("/resources/SlytherinGreen.jpg").getImage();
 
 		Image houseImage = hufflepuffImage;
 		Image backgroundImage = slytherinGreenImage;
