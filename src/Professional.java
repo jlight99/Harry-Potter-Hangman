@@ -1,4 +1,4 @@
-class Professional extends Character {
+class Professional extends GameCharacter {
 	private String position;
 
 	public Professional(String name, String house, String gender, String position) {

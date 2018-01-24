@@ -1,11 +1,5 @@
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.*;
+import java.awt.event.*;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
@@ -14,23 +8,28 @@ import javax.swing.JTextField;
 
 class GuessWordPanel extends GamePanel {
 	private Graphics gTemp;
-	private Image parchmentImage = new ImageIcon("/resources/Parchment.jpg").getImage();
-	public static Character chosenOne; 
+	private Image parchmentImage = new ImageIcon("resources/Parchment.jpg").getImage();
+	public static GameCharacter chosenOne; 
 	private String word;
 	private int wordLength;
 	private int spaceIdx;
 	private Letter[] letters;
+	ArrayList<Character> guessedBank = new ArrayList<Character>();
+	ArrayList<Character> wrongGuessedBank = new ArrayList<Character>();
 	private boolean guessed;
 	private int totalGuesses;
 	private int wrongGuesses;
-	private int numPanel = 0;
+	public static final int INITIAL = 0;
+	public static final int BEFORE_GUESSING = 1;
+	public static final int WHILE_GUESSING = 2;
+	public static final int ALL_GUESSED = 3;
+	private int paintOption = INITIAL;
 	JButton jbtOK;
 	JButton jbtGuessChar = new JButton("Guess anyone!");
 	JButton jbtGuessMate = new JButton("Guess a Housemate!");
 	//JButton jbtGuessStud = new JButton("Guess a student!");
 	//JButton jbtGuessProf = new JButton("Guess a professor!");
 	JButton jbtGuessQuid = new JButton("Guess a Quidditch player!");
-	private JButton jbtGuess;
 	private String guess;
 	private int guessIdx;
 	private String message;
@@ -43,6 +42,9 @@ class GuessWordPanel extends GamePanel {
 	//public static final int GUESS_STUDENT = 2;
 	//public static final int GUESS_PROFESSOR = 3;
 	public static final int GUESS_QUIDDITCHPLAYER = 4;
+	JButton jbtProceed = new JButton();
+	int idx = 0;
+	boolean repeatedGuess = false;
 
 	public GuessWordPanel() {
 		setLayout(null);
@@ -148,12 +150,24 @@ class GuessWordPanel extends GamePanel {
 	
 		if (guessesLeft == false) {
 			proceed();
-		} else if (numPanel == 0) {
+		} else if (paintOption == INITIAL) {
 			drawBackground(gTemp);
-		} else if (numPanel == 1) {
+		} else if (paintOption == BEFORE_GUESSING) {
 			drawPrompt(gTemp);
-		} else if (numPanel == 2) {
+			drawPromptInteraction(gTemp);
+		} else if (paintOption == WHILE_GUESSING) {
 			drawPrompt(gTemp);
+			drawPromptInteraction(gTemp);
+			drawGuessedLetters(gTemp);
+			drawWrongGuesses(gTemp);
+			
+			if (wrongGuessedBank.size() >= 3) {
+				drawHint(gTemp);
+			}
+			
+		} else if (paintOption == ALL_GUESSED) {
+			drawPrompt(gTemp);
+			addProceedButton();
 			drawGuessedLetters(gTemp);
 			drawWrongGuesses(gTemp);
 		}
@@ -204,7 +218,7 @@ class GuessWordPanel extends GamePanel {
 		guessMode = GUESS_CHARACTER;
 		getWord();
 		vanishButtons();
-		numPanel = 1;
+		paintOption = BEFORE_GUESSING;
 		repaint();
 	}
 	
@@ -212,7 +226,7 @@ class GuessWordPanel extends GamePanel {
 		guessMode = GUESS_HOUSEMATE;
 		getWord();
 		vanishButtons();
-		numPanel = 1;
+		paintOption = BEFORE_GUESSING;
 		repaint();
 	}
 /*	
@@ -220,7 +234,7 @@ class GuessWordPanel extends GamePanel {
 		guessMode = GUESS_STUDENT;
 		getWord();
 		vanishButtons();
-		numPanel = 1;
+		paintOption = BEFORE_GUESSING;
 		repaint();
 	}
 	
@@ -228,7 +242,7 @@ class GuessWordPanel extends GamePanel {
 		guessMode = GUESS_PROFESSOR;
 		getWord();
 		vanishButtons();
-		numPanel = 1;
+		paintOption = BEFORE_GUESSING;
 		repaint();		
 	}
 */
@@ -236,26 +250,44 @@ class GuessWordPanel extends GamePanel {
 		guessMode = GUESS_QUIDDITCHPLAYER;
 		getWord();
 		vanishButtons();
-		numPanel = 1;
+		paintOption = BEFORE_GUESSING;
 		repaint();
 	}
 	
 	public void drawPrompt(Graphics gTemp) {
 		gTemp.setFont(new Font("TimesRoman", Font.ITALIC, 20));
 
+		drawGuessMessage();
+		drawLetterSlots();	
+	}
+	
+	public void drawPromptInteraction(Graphics gTemp) {
+		JTextField jtfGuess = new JTextField();
+		JButton jbtGuess = new JButton();
+		
+		addGuessTextfield(jtfGuess);
+		addGuessButton(jbtGuess, jtfGuess);
+		
+		jtfGuess.requestFocus();
+	}
+	
+	public void drawGuessMessage() {
 		FontMetrics fm = gTemp.getFontMetrics();
+		
 		String guess = "Can you guess the name of this young " + GuessWordPanel.chosenOne.getGender() + "?";
 		int x1 = 250 - fm.stringWidth(guess) / 2;
 		int y1 = 65;
 
 		gTemp.drawString(guess, x1, y1);
+	}
 	
-		int x2 = 500 / 2 - 19 * wordLength + 10 * (wordLength - 1) / 2;
+	public void drawLetterSlots() {
+		int x2 = 500 / 2 - 19 * wordLength + 9 * (wordLength - 1) / 2 + 8;
 		int y2 = 136;		
 
 		for (int j = 0; j < wordLength; j++) {
 			if (j == spaceIdx) {
-				x2 += 15;
+				x2 += 14;
 			} else {
 				gTemp.drawLine(x2, y2, x2 + 19, y2);
 				letters[j].setX(x2 + 3);
@@ -264,10 +296,13 @@ class GuessWordPanel extends GamePanel {
 				x2 += 29;
 			}
 		}
+	}
 	
-		JTextField jtfGuess = new JTextField("Enter your guess here!");
+	public void addGuessTextfield(JTextField jtfGuess) {
+		jtfGuess.setText("Enter your guess here!");
 		jtfGuess.setBounds(100, 230, 200, 30);
-		jtfGuess.requestFocus(true);
+		
+		add(jtfGuess);
 
 		jtfGuess.addKeyListener(new KeyAdapter() {
 			@Override
@@ -278,10 +313,13 @@ class GuessWordPanel extends GamePanel {
 				}
 			}
 		});
-
-		jbtGuess = new JButton("Guess!");
+	}
+	
+	public void addGuessButton(JButton jbtGuess, JTextField jtfGuess) {
+		jbtGuess.setText("Guess!");
 		jbtGuess.setBounds(300, 230, 100, 30);
-		jbtGuess.setFocusable(true);
+
+		add(jbtGuess);
 
 		jbtGuess.addActionListener(new ActionListener() {
 			@Override
@@ -290,11 +328,37 @@ class GuessWordPanel extends GamePanel {
 				GuessWordPanel.this.verifyGuess();
 			}
 		});
-
-		add(jtfGuess);
-		add(jbtGuess);
+	}
+	
+	public void addProceedButton() {
+		jbtProceed.setText("I know I am");
+		jbtProceed.setBounds(240, 160, 139, 27);
+		
+		add(jbtProceed);
+		
+		jbtProceed.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				GuessWordPanel.this.proceed();
+			}
+		});
 	}
 
+	public void updateGuessedBank(Character c) {
+		int i;
+		
+		for (i = 0; i < guessedBank.size(); i++) {
+			if (guessedBank.get(i).charValue() == c.charValue()) {
+				repeatedGuess = true;
+				break;
+			}
+		}
+		
+		if (!repeatedGuess || guessedBank.size() == 0) {
+			guessedBank.add(c);
+		}
+	}
+	
 	public void verifyGuess() {
 		totalGuesses++;
 		guessed = false;
@@ -305,30 +369,39 @@ class GuessWordPanel extends GamePanel {
 			}
 			message = "Impressive!";
 			allGuessed = true;
-			proceed();
+	
+			paintOption = ALL_GUESSED;
+			repaint();
 		} else {
 			char guessedChar = guess.charAt(0);
-
-			int i;
-			for (i = 0; i < wordLength; i++) {
-				if (guessedChar == letters[i].getChar()) {
-					letters[i].setGuessed(true);
-					guessed = true;
-				}
-			}
-
-			if (guessed) {
-				message = "Nice one!";
+			updateGuessedBank(new Character(guessedChar));
+			
+			if (repeatedGuess) {
+				message = "You've already guessed this!";
+				repaint();
+				repeatedGuess = false;//reset value of repeatedGuess
 			} else {
-				message = "That is incorrect";
-				wrongGuesses++;
-			}	
-
-			checkAllGuessed();
+				int i;
+				for (i = 0; i < wordLength; i++) {
+					if (guessedChar == letters[i].getChar()) {
+						letters[i].setGuessed(true);
+						guessed = true;
+					}
+				}
+	
+				if (guessed) {
+					message = "Nice one!";
+				} else {
+					wrongGuessedBank.add(new Character(guessedChar));
+					message = "That is incorrect";
+					wrongGuesses++;
+				}	
+	
+				checkAllGuessed();
+			}
+			paintOption = WHILE_GUESSING;
+			repaint();
 		}
-
-		numPanel = 2;
-		repaint();
 	}
 
 	public void checkAllGuessed() {
@@ -348,6 +421,10 @@ class GuessWordPanel extends GamePanel {
 	public void drawGuessedLetters(Graphics gTemp) {
 		FontMetrics fm = gTemp.getFontMetrics();
 		int x1 = getWidth() / 2 - fm.stringWidth(message) / 2;
+		
+		if (allGuessed) {
+			x1 -= 80;
+		}
 
 		gTemp.drawString(message, x1, 180);
 
@@ -360,8 +437,30 @@ class GuessWordPanel extends GamePanel {
 		}
 	}
 
+	public void drawHint(Graphics gTemp) {
+		gTemp.setFont(new Font("TimesRoman", Font.ITALIC, 16));
+		FontMetrics fm = gTemp.getFontMetrics();
+		
+		String hintMessage = ((Student) chosenOne).getQuidditchHint();
+		int x1 = getWidth() / 2 - fm.stringWidth(hintMessage) / 2;
+		
+		gTemp.drawString(hintMessage, x1, 100);
+	}
+	
 	public void drawWrongGuesses(Graphics gTemp) {
-		switch (wrongGuesses) {
+		int x = 136;
+		int y = 217;
+		for (int i = 0; i < wrongGuessedBank.size(); i++) {
+			gTemp.setColor(Color.BLACK);
+			gTemp.drawString(wrongGuessedBank.get(i).charValue() + "", x, y);
+			gTemp.setColor(Color.RED);
+			gTemp.drawLine(x - 2, y - 10, x + 15, y - 10);
+			x += 32;
+		}
+	
+		gTemp.setColor(Color.BLACK);
+		
+		switch (wrongGuessedBank.size()) {
 			case 1:
 				gTemp.drawOval(442, 150, 30, 30);
 				break;
@@ -413,76 +512,73 @@ class GuessWordPanel extends GamePanel {
 		frame.add(playAgainPanel);
 	}	
 
-	public Character getChosenOne() {
-		
-		System.out.println(guessMode);
-		
-		ArrayList<Character> characterBank = new ArrayList<Character>();
-		Character cChang = new QuidditchPlayer("Cho Chang", "Ravenclaw", "witch", 2, "Seeker");
+	public GameCharacter getChosenOne() {
+		ArrayList<GameCharacter> characterBank = new ArrayList<GameCharacter>();
+		GameCharacter cChang = new QuidditchPlayer("Cho Chang", "Ravenclaw", "witch", 2, "Seeker");
 		characterBank.add(cChang);
-		Character lLovegood = new Student("Luna Lovegood", "Ravenclaw", "witch", 1);
+		GameCharacter lLovegood = new Student("Luna Lovegood", "Ravenclaw", "witch", 1);
 		characterBank.add(lLovegood);
-		Character tBoot = new Student("Terry Boot", "Ravenclaw", "wizard", 1);
+		GameCharacter tBoot = new Student("Terry Boot", "Ravenclaw", "wizard", 1);
 		characterBank.add(tBoot);
-		Character mCorner = new Student("Michael Corner", "Ravenclaw", "wizard", 1);
+		GameCharacter mCorner = new Student("Michael Corner", "Ravenclaw", "wizard", 1);
 		characterBank.add(mCorner);
-		Character rDavies = new QuidditchPlayer("Roger Davies", "Ravenclaw", "wizard", 3, "Chaser");
+		GameCharacter rDavies = new QuidditchPlayer("Roger Davies", "Ravenclaw", "wizard", 3, "Chaser");
 		characterBank.add(rDavies);
-		Character hPotter = new QuidditchPlayer("Harry Potter", "Gryffindor", "wizard", 1, "Seeker");
+		GameCharacter hPotter = new QuidditchPlayer("Harry Potter", "Gryffindor", "wizard", 1, "Seeker");
 		characterBank.add(hPotter);
-		Character rWeasley = new QuidditchPlayer("Ron Weasley", "Gryffindor", "wizard", 1, "Keeper");
+		GameCharacter rWeasley = new QuidditchPlayer("Ron Weasley", "Gryffindor", "wizard", 1, "Keeper");
 		characterBank.add(rWeasley);
-		Character hGranger = new Student("Hermione Granger", "Gryffindor", "witch", 1);
+		GameCharacter hGranger = new Student("Hermione Granger", "Gryffindor", "witch", 1);
 		characterBank.add(hGranger);
-		Character ginWeasley = new QuidditchPlayer("Ginny Weasley", "Gryffindor", "witch", 0, "Chaser");
+		GameCharacter ginWeasley = new QuidditchPlayer("Ginny Weasley", "Gryffindor", "witch", 0, "Chaser");
 		characterBank.add(ginWeasley);
-		Character nLongbottom = new Student("Neville Longbottom", "Gryffindor", "wizard", 1);
+		GameCharacter nLongbottom = new Student("Neville Longbottom", "Gryffindor", "wizard", 1);
 		characterBank.add(nLongbottom);
-		Character kBell = new QuidditchPlayer("Katie Bell", "Gryffindor", "witch", 2, "Chaser");
+		GameCharacter kBell = new QuidditchPlayer("Katie Bell", "Gryffindor", "witch", 2, "Chaser");
 		characterBank.add(kBell);
-		Character aSpinnet = new QuidditchPlayer("Alicia Spinnet", "Gryffindor", "witch", 3, "Chaser");
+		GameCharacter aSpinnet = new QuidditchPlayer("Alicia Spinnet", "Gryffindor", "witch", 3, "Chaser");
 		characterBank.add(aSpinnet);
-		Character aJohnson = new QuidditchPlayer("Angelina Johnson", "Gryffindor", "witch", 3, "Chaser");
+		GameCharacter aJohnson = new QuidditchPlayer("Angelina Johnson", "Gryffindor", "witch", 3, "Chaser");
 		characterBank.add(aJohnson);
-		Character oWood = new QuidditchPlayer("Oliver Wood", "Gryffindor", "wizard", 5, "Chaser");
+		GameCharacter oWood = new QuidditchPlayer("Oliver Wood", "Gryffindor", "wizard", 5, "Chaser");
 		characterBank.add(oWood);
-		Character fWeasley = new QuidditchPlayer("Fred Weasley", "Gryffindor", "wizard", 3, "Beater");
+		GameCharacter fWeasley = new QuidditchPlayer("Fred Weasley", "Gryffindor", "wizard", 3, "Beater");
 		characterBank.add(fWeasley);
-		Character geoWeasley = new QuidditchPlayer("George Weasley", "Gryffindor", "wizard", 3, "Beater");
+		GameCharacter geoWeasley = new QuidditchPlayer("George Weasley", "Gryffindor", "wizard", 3, "Beater");
 		characterBank.add(geoWeasley);
-		Character pWeasley = new Student("Percy Weasley", "Gryffindor", "wizard", 5);
+		GameCharacter pWeasley = new Student("Percy Weasley", "Gryffindor", "wizard", 5);
 		characterBank.add(pWeasley);
-		Character eMacmillan = new Student("Ernie Macmillan", "Hufflepuff", "wizard", 1);
+		GameCharacter eMacmillan = new Student("Ernie Macmillan", "Hufflepuff", "wizard", 1);
 		characterBank.add(eMacmillan);
-		Character hAbbott = new Student("Hannah Abbott", "Hufflepuff", "witch", 1);
+		GameCharacter hAbbott = new Student("Hannah Abbott", "Hufflepuff", "witch", 1);
 		characterBank.add(hAbbott);
-		Character sBones = new Student("Susan Bones", "Hufflepuff", "witch", 1);
+		GameCharacter sBones = new Student("Susan Bones", "Hufflepuff", "witch", 1);
 		characterBank.add(sBones);
-		Character cDiggory = new QuidditchPlayer("Cedric Diggory", "Hufflepuff", "wizard", 4, "Seeker");
+		GameCharacter cDiggory = new QuidditchPlayer("Cedric Diggory", "Hufflepuff", "wizard", 4, "Seeker");
 		characterBank.add(cDiggory);
-		Character zSmith = new QuidditchPlayer("Zacharias Smith", "Hufflepuff", "wizard", 1, "Chaser");
+		GameCharacter zSmith = new QuidditchPlayer("Zacharias Smith", "Hufflepuff", "wizard", 1, "Chaser");
 		characterBank.add(zSmith);
-		Character dMalfoy = new QuidditchPlayer("Draco Malfoy", "Slytherin", "wizard", 1, "Seeker");
+		GameCharacter dMalfoy = new QuidditchPlayer("Draco Malfoy", "Slytherin", "wizard", 1, "Seeker");
 		characterBank.add(dMalfoy);
-		Character pParkinson = new Student("Pansy Parkinson", "Slytherin", "witch", 1);
+		GameCharacter pParkinson = new Student("Pansy Parkinson", "Slytherin", "witch", 1);
 		characterBank.add(pParkinson);
-		Character aGreengrass = new Student("Astoria Greengrass", "Slytherin", "witch", 0);
+		GameCharacter aGreengrass = new Student("Astoria Greengrass", "Slytherin", "witch", 0);
 		characterBank.add(aGreengrass);
-		Character tNott = new Student("Theodore Nott", "Slytherin", "wizard", 1);
+		GameCharacter tNott = new Student("Theodore Nott", "Slytherin", "wizard", 1);
 		characterBank.add(tNott);
-		Character bZabini = new Student("Blaise Zabini", "Slytherin", "wizard", 1);
+		GameCharacter bZabini = new Student("Blaise Zabini", "Slytherin", "wizard", 1);
 		characterBank.add(bZabini);
-		Character mFlint = new QuidditchPlayer("Marcus Flint", "Slytherin", "wizard", 6, "Chaser");
+		GameCharacter mFlint = new QuidditchPlayer("Marcus Flint", "Slytherin", "wizard", 6, "Chaser");
 		characterBank.add(mFlint);
 		
-		ArrayList<Character> gryffindorBank = new ArrayList<Character>();
-		ArrayList<Character> hufflepuffBank = new ArrayList<Character>();
-		ArrayList<Character> slytherinBank = new ArrayList<Character>();
-		ArrayList<Character> ravenclawBank = new ArrayList<Character>();
+		ArrayList<GameCharacter> gryffindorBank = new ArrayList<GameCharacter>();
+		ArrayList<GameCharacter> hufflepuffBank = new ArrayList<GameCharacter>();
+		ArrayList<GameCharacter> slytherinBank = new ArrayList<GameCharacter>();
+		ArrayList<GameCharacter> ravenclawBank = new ArrayList<GameCharacter>();
 		ArrayList<QuidditchPlayer> quidditchBank = new ArrayList<QuidditchPlayer>();
 
 		for (int i = 0; i < characterBank.size(); i++) {
-			Character currentCharacter = characterBank.get(i);
+			GameCharacter currentCharacter = characterBank.get(i);
 			if (currentCharacter.getHouse().equals("Gryffindor")) {
 				gryffindorBank.add(currentCharacter);
 			} else if (currentCharacter.getHouse().equals("Hufflepuff")) {
@@ -497,7 +593,7 @@ class GuessWordPanel extends GamePanel {
 				quidditchBank.add((QuidditchPlayer) currentCharacter);
 			}
 		}
-		
+
 		if (guessMode == GUESS_CHARACTER) {
 			return characterBank.get((int) (Math.random() * characterBank.size()));
 		} else if (guessMode == GUESS_HOUSEMATE) {

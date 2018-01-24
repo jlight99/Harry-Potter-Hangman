@@ -15,8 +15,11 @@ import javax.swing.JButton;
 
 class SortingPanel extends GamePanel {
 	Graphics gTemp;
-	Image sortingBackground = new ImageIcon("/resources/SortingHatBackground.jpg").getImage();
-	public static int paintTimes = 0;
+	Image sortingBackground = new ImageIcon("resources/SortingHatBackground.jpg").getImage();
+	static final int INITIAL = 0;
+	static final int CHOOSE = 1;
+	static final int HAT = 2;
+	int paintOption = INITIAL;
 	JButton jbtOk;
 	String choice;
 	public static String userHouse;
@@ -25,16 +28,16 @@ class SortingPanel extends GamePanel {
 		setLayout(null);
 		setFocusable(true);
 
-
 		jbtOk = new JButton("Ok, let's do it!");
 		jbtOk.setBounds(198, 157, 188, 35);
-		jbtOk.setFocusable(true);
 
+		add(jbtOk);
+		
 		jbtOk.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				jbtOk.setVisible(false);
-				paintTimes = 1;
+				setPaintOption(CHOOSE);
 				repaint();
 			}
 		});
@@ -43,12 +46,10 @@ class SortingPanel extends GamePanel {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				jbtOk.setVisible(false);
-				paintTimes = 1;
+				setPaintOption(CHOOSE);
 				repaint();
 			}
 		});
-
-		add(jbtOk);
 
 		addKeyListener(new KeyAdapter() {
 			@Override
@@ -63,7 +64,7 @@ class SortingPanel extends GamePanel {
 				} else if (code == 'S') {
 					userHouse = "SLYTHERIN";
 				} else if (code == '?') {
-					paintTimes = 2;
+					setPaintOption(HAT);
 					repaint();
 				}
 			
@@ -80,7 +81,7 @@ class SortingPanel extends GamePanel {
 				int y = e.getY();
 
 				if (x <= 127 || (x <= 191 && y >= 184 && y <= 211)) {
-					SortingPanel.paintTimes = 2;
+					setPaintOption(HAT);
 					SortingPanel.this.repaint();
 				} else if (x >= 260 && x < 355) {
 					if (y >= 20 && y <= 115) {
@@ -106,18 +107,21 @@ class SortingPanel extends GamePanel {
 			@Override public void mousePressed(MouseEvent e) {}
 			@Override public void mouseReleased(MouseEvent e) {}
 		});
-
 	}
 
+	public void setPaintOption(int paintOp) {
+		paintOption = paintOp;
+	}
+	
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		gTemp = g.create();
-		if (paintTimes == 0) {
+		if (paintOption == INITIAL) {
 			drawItsTime(gTemp);
-		} else if (paintTimes == 1) {
+		} else if (paintOption == CHOOSE) {
 			drawChoice(gTemp);
-		} else if (paintTimes == 2) {
+		} else if (paintOption == HAT) {
 			drawHat(gTemp);
 		} 
 	}
@@ -137,7 +141,7 @@ class SortingPanel extends GamePanel {
 	}
 
 	private void drawChoice(Graphics gTemp) {
-		Image emblem = new ImageIcon("/resources/Emblem.png").getImage();
+		Image emblem = new ImageIcon("resources/Emblem.png").getImage();
 		gTemp.drawImage(sortingBackground, 0, 0, 500, 300, this);
 		gTemp.drawImage(emblem, 259, 19, 211, 225, this); 
 		
@@ -159,10 +163,11 @@ class SortingPanel extends GamePanel {
 	}
 
 	private void drawHat(Graphics gTemp) {
-		Image imgPartyPopper = new ImageIcon("/resources/PartyPoppers.png").getImage().getScaledInstance(45, -1, 0);
-		JButton jbtParty = new JButton(new ImageIcon(imgPartyPopper));
-		jbtParty.setBounds(400, 200, 45, 45);
+		JButton jbtParty = new JButton();
 
+		addPartyButton(jbtParty);
+		jbtParty.requestFocus();
+		
 		jbtParty.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -179,14 +184,11 @@ class SortingPanel extends GamePanel {
 			}
 		});
 
-		add(jbtParty);
-
 		gTemp.drawImage(sortingBackground, 0, 0, 630, 370, this);
-		Image speechBubbleImage = new ImageIcon("/resources/SpeechBubble.png").getImage();
+		Image speechBubbleImage = new ImageIcon("resources/SpeechBubble.png").getImage();
 		gTemp.drawImage(speechBubbleImage, 129, 20, 300, 200, this);
 
-		String[] houses = {"RAVENCLAW", "GRYFFINDOR", "HUFFLEPUFF", "SLYTHERIN"};
-		userHouse = houses[(int) (Math.random() * 4)];
+		userHouse = getHouse();
 
 		FontMetrics fm = gTemp.getFontMetrics();
 		int x = 137 + (400 - 180) / 2 - fm.stringWidth(userHouse + "!") / 2;
@@ -194,7 +196,19 @@ class SortingPanel extends GamePanel {
 
 		gTemp.setFont(new Font("TimesRoman", Font.BOLD, 24));
 		gTemp.drawString(userHouse + "!", x, y);
+	}
+	
+	public void addPartyButton(JButton jbtParty) {
+		Image imgPartyPopper = new ImageIcon("resources/PartyPoppers.png").getImage().getScaledInstance(45, -1, 0);
+		jbtParty.setIcon(new ImageIcon(imgPartyPopper));
+		jbtParty.setBounds(400, 200, 45, 45);
 
+		add(jbtParty);
+	}
+	
+	public String getHouse() {
+		String[] houses = {"RAVENCLAW", "GRYFFINDOR", "HUFFLEPUFF", "SLYTHERIN"};
+		return houses[(int) (Math.random() * 4)];
 	}
 
 	public void proceed() {

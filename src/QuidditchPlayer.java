@@ -9,4 +9,9 @@ class QuidditchPlayer extends Student {
 	public String getQuidPosition() {
 		return quidPosition;
 	}
+	
+	@Override
+	public String getQuidditchHint() {
+		return "Hint: this person plays " + quidPosition + " for their House team";
+	}
 }

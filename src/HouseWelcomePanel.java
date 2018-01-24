@@ -13,28 +13,17 @@ import javax.swing.JButton;
 
 class HouseWelcomePanel extends GamePanel {
 	Graphics gTemp;
-	JButton jbtMotto;
+	JButton jbtMotto = new JButton();
 
 	public HouseWelcomePanel() {
 		setLayout(null);		
 
-		if (SortingPanel.userHouse.equals("GRYFFINDOR")) {
-			jbtMotto = new JButton("Our daring, nerve, "
-				+ "and chivalry set us Gryffindors apart!");
-		} else if (SortingPanel.userHouse.equals("HUFFLEPUFF")) {
-			jbtMotto = new JButton("Us Hufflepuffs are just "
-				+ "and loyal and unafraid of toil!");
-		} else if (SortingPanel.userHouse.equals("RAVENCLAW")) {
-			jbtMotto = new JButton("Wit beyond measure is " 
-				+ "man's greatest treasure!");
-		} else if (SortingPanel.userHouse.equals("SLYTHERIN")) {
-			jbtMotto = new JButton("We Slytherins use any means "
-				+ "to achieve our ends!");
-		}
-
+		jbtMotto.setText(getMotto());
 		jbtMotto.setBounds(29, 274, 435, 25);
 		jbtMotto.setOpaque(false);
 
+		add(jbtMotto);
+		
 		jbtMotto.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -48,8 +37,20 @@ class HouseWelcomePanel extends GamePanel {
 				proceed();
 			}
 		});
-
-		add(jbtMotto);
+	}
+	
+	public String getMotto() {
+		if (SortingPanel.userHouse.equals("GRYFFINDOR")) {
+			return "Our daring, nerve, and chivalry set us Gryffindors apart!";
+		} else if (SortingPanel.userHouse.equals("HUFFLEPUFF")) {
+			return "Us Hufflepuffs are just and loyal and unafraid of toil!";
+		} else if (SortingPanel.userHouse.equals("RAVENCLAW")) {
+			return "Wit beyond measure is man's greatest treasure!";
+		} else if (SortingPanel.userHouse.equals("SLYTHERIN")) {
+			return "We Slytherins use any means to achieve our ends!";
+		} else {
+			return "Invalid user house";
+		}
 	}
 
 	@Override
@@ -60,20 +61,25 @@ class HouseWelcomePanel extends GamePanel {
 	}
 
 	public void drawBackground(Graphics gTemp) {	
-		Image gryffindorImage = new ImageIcon("/resources/Gryffindor.png").getImage();
-		Image gryffindorRedImage = new ImageIcon("/resources/GryffindorRed.jpg").getImage();
-		Image ravenclawImage = new ImageIcon("/resources/Ravenclaw.png").getImage();
-		Image ravenclawBlueImage = new ImageIcon("/resources/RavenclawBlue.jpg").getImage();
-		Image hufflepuffImage = new ImageIcon("/resources/Hufflepuff.png").getImage();
-		Image hufflepuffYellowImage = new ImageIcon("/resources/HufflepuffYellow.jpg").getImage();
-		Image slytherinImage = new ImageIcon("/resources/Slytherin.png").getImage();
-		Image slytherinGreenImage = new ImageIcon("/resources/SlytherinGreen.jpg").getImage();
-
+		Image gryffindorImage = new ImageIcon("resources/Gryffindor.png").getImage();
+		Image gryffindorRedImage = new ImageIcon("resources/GryffindorRed.jpg").getImage();
+		Image ravenclawImage = new ImageIcon("resources/Ravenclaw.png").getImage();
+		Image ravenclawBlueImage = new ImageIcon("resources/RavenclawBlue.jpg").getImage();
+		Image hufflepuffImage = new ImageIcon("resources/Hufflepuff.png").getImage();
+		Image hufflepuffYellowImage = new ImageIcon("resources/HufflepuffYellow.jpg").getImage();
+		Image slytherinImage = new ImageIcon("resources/Slytherin.png").getImage();
+		Image slytherinGreenImage = new ImageIcon("resources/SlytherinGreen.jpg").getImage();
+/*
 		Image houseImage = hufflepuffImage;
 		Image backgroundImage = slytherinGreenImage;
 		Color fontColour = Color.RED;
 		String houseName = "Ravenclaw";
-		 
+*/	 
+		Image houseImage = null;
+		Image backgroundImage = null;
+		Color fontColour = null;
+		String houseName = null;
+		
 		if (SortingPanel.userHouse.equals("GRYFFINDOR")) {
 			houseImage = gryffindorImage;
 			backgroundImage = gryffindorRedImage;
@@ -94,7 +100,7 @@ class HouseWelcomePanel extends GamePanel {
 			backgroundImage = slytherinGreenImage;
 			fontColour = Color.LIGHT_GRAY;
 			houseName = "Slytherin";
-		}
+		} 
 
 		if (InitiationPanel.username == null) {
 			InitiationPanel.username = "He Who Must Not Be Named";
@@ -131,5 +137,6 @@ class HouseWelcomePanel extends GamePanel {
 		super.proceed();
 		GuessWordPanel guessPanel = new GuessWordPanel();
 		frame.add(guessPanel);
+		guessPanel.jbtGuessChar.requestFocus();
 	}
 }

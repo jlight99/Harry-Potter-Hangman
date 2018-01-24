@@ -1,9 +1,9 @@
-class Character {
+class GameCharacter {
 	private String name;
 	private String house;
 	private String gender;
 
-	Character(String n, String h, String g) {
+	GameCharacter(String n, String h, String g) {
 		name = n;
 		house = h;
 		gender = g;

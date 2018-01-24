@@ -20,7 +20,7 @@ import javax.swing.border.Border;
 class PlayAgainPanel extends GamePanel {
 	Graphics gTemp;
 	int paint = -1;
-	private Image parchmentImage = new ImageIcon("/resources/Parchment.jpg").getImage();
+	private Image parchmentImage = new ImageIcon("resources/Parchment.jpg").getImage();
 	JButton jbtHi;
 	JButton jbtPlayAgain;
 	JButton jbtQuit;
@@ -144,7 +144,7 @@ class PlayAgainPanel extends GamePanel {
 	}
 
 	public void drawPlayAgain(Graphics gTemp) {
-		Image characters = new ImageIcon("/resources/Characters.jpg").getImage();
+		Image characters = new ImageIcon("resources/Characters.jpg").getImage();
 		gTemp.drawImage(characters, 0, 0, 500, 300, this);
 
 		Border pointsBorder = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 5);

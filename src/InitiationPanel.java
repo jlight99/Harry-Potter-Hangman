@@ -12,9 +12,9 @@ import javax.swing.JButton;
 import javax.swing.JTextField;
 
 class InitiationPanel extends GamePanel {
+	Graphics gTemp;
 	JTextField jtfName;
 	public static String username;
-	Graphics gTemp;
 	String welcomeMessage = "Welcome to the Sorting Ceremony!";
 
 	public InitiationPanel() {
@@ -33,8 +33,7 @@ class InitiationPanel extends GamePanel {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					username = jtfName.getText();
-					welcomeMessage = "Welcome, " + username + "!";
+					InitiationPanel.this.getUsername(jtfName.getText());
 					repaint();
 				}
 			}
@@ -54,13 +53,17 @@ class InitiationPanel extends GamePanel {
 			}
 		});
 	}
+	
+	public void getUsername(String name) {
+		username = name;
+		welcomeMessage = "Welcome, " + username + "!";
+	}
 
 	public void proceed() {
 		super.proceed();
-		username = jtfName.getText();
 		SortingPanel sortingPanel = new SortingPanel();
 		frame.add(sortingPanel);
-		sortingPanel.jbtOk.requestFocus();//do this more elegantly
+		sortingPanel.jbtOk.requestFocus();
 	}
 
 	@Override 
@@ -71,7 +74,7 @@ class InitiationPanel extends GamePanel {
 	}
 
 	private void doDrawing(Graphics gTemp) {
-		Image parchment = new ImageIcon("/resources/Parchment.jpg").getImage();
+		Image parchment = new ImageIcon("resources/Parchment.jpg").getImage();
 		gTemp.drawImage(parchment, 0, 0, this);
 		gTemp.setFont(new Font("TimesRoman", Font.ITALIC, 24)); 
 

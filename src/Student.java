@@ -1,4 +1,4 @@
-class Student extends Character {
+class Student extends GameCharacter {
 	private int year;
 
 	public Student(String name, String house, String gender, int year) {
@@ -8,5 +8,9 @@ class Student extends Character {
 
 	public int getYear() {
 		return year;
+	}
+	
+	public String getQuidditchHint() {
+		return "Hint: this person does not play Quidditch";
 	}
 }
