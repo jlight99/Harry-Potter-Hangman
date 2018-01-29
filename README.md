@@ -1,6 +1,16 @@
 # Harry Potter Hangman
 A Harry Potter-themed adventure in which the user is Sorted into one of the four Hogwarts Houses and has the chance to guess the identity of any number of mystery characters and score house points in a hangman-style game
 
+## Installation
+To play the game, first clone the .jar file:
+
+`$ git clone https://github.com/jlight99/Harry-Potter-Hangman/blob/master/HarryPotterHangman.jar`
+
+Then, simply enter the following to run:
+
+`$ java -jar HarryPotterHangman.jar`
+
+
 ## Features
 ### Login
 A login page which stores the entered username that is employed throughout the game to provide users with a more personalized experience
