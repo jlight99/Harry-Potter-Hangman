@@ -14,17 +14,18 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
 class SortingPanel extends GamePanel {
-	Graphics gTemp;
-	Image sortingBackground = new ImageIcon("resources/SortingHatBackground.jpg").getImage();
+	private Graphics gTemp;
+	private Image sortingBackground = new ImageIcon("resources/SortingHatBackground.jpg").getImage();
 	static final int INITIAL = 0;
 	static final int CHOOSE = 1;
 	static final int HAT = 2;
-	int paintOption = INITIAL;
-	JButton jbtOk;
-	String choice;
-	public static String userHouse;
+	private int paintOption = INITIAL;
+	protected JButton jbtOk;
+	private String choice;
+	public static String userHouse;//hmmmmmmmmmmm
 
-	public SortingPanel() {
+	SortingPanel(GameData gameData) {
+		super(gameData);
 		setLayout(null);
 		setFocusable(true);
 
@@ -109,7 +110,7 @@ class SortingPanel extends GamePanel {
 		});
 	}
 
-	public void setPaintOption(int paintOp) {
+	private void setPaintOption(int paintOp) {
 		paintOption = paintOp;
 	}
 	
@@ -198,7 +199,7 @@ class SortingPanel extends GamePanel {
 		gTemp.drawString(userHouse + "!", x, y);
 	}
 	
-	public void addPartyButton(JButton jbtParty) {
+	private void addPartyButton(JButton jbtParty) {
 		Image imgPartyPopper = new ImageIcon("resources/PartyPoppers.png").getImage().getScaledInstance(45, -1, 0);
 		jbtParty.setIcon(new ImageIcon(imgPartyPopper));
 		jbtParty.setBounds(400, 200, 45, 45);
@@ -206,14 +207,14 @@ class SortingPanel extends GamePanel {
 		add(jbtParty);
 	}
 	
-	public String getHouse() {
+	private String getHouse() {
 		String[] houses = {"RAVENCLAW", "GRYFFINDOR", "HUFFLEPUFF", "SLYTHERIN"};
 		return houses[(int) (Math.random() * 4)];
 	}
 
-	public void proceed() {
+	protected void proceed() {
 		super.proceed();	
-		HouseWelcomePanel hwPanel = new HouseWelcomePanel();
+		HouseWelcomePanel hwPanel = new HouseWelcomePanel(gameData);
 		frame.add(hwPanel);
 		hwPanel.jbtMotto.requestFocus();
 	}

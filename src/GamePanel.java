@@ -3,10 +3,15 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 abstract class GamePanel extends JPanel {
-	JFrame frame;
-	int guessMode;
+	protected JFrame frame;
+	protected GameData gameData;
+	
+	GamePanel(GameData gameData) {
+		this.gameData = gameData;
+		setLayout(null);
+	}
 
-	public void proceed() {
+	protected void proceed() {
 		frame = (JFrame) SwingUtilities.getWindowAncestor(this);
 		this.setVisible(false);
 	}

@@ -12,14 +12,14 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
 class HouseWelcomePanel extends GamePanel {
-	Graphics gTemp;
-	JButton jbtMotto = new JButton();
+	private Graphics gTemp;
+	protected JButton jbtMotto = new JButton();
 
-	public HouseWelcomePanel() {
-		setLayout(null);		
+	HouseWelcomePanel(GameData gameData) {
+		super(gameData);		
 
 		jbtMotto.setText(getMotto());
-		jbtMotto.setBounds(29, 254, 435, 25);
+		jbtMotto.setBounds(29, 274, 435, 25);
 		jbtMotto.setOpaque(false);
 
 		add(jbtMotto);
@@ -39,7 +39,7 @@ class HouseWelcomePanel extends GamePanel {
 		});
 	}
 	
-	public String getMotto() {
+	private String getMotto() {
 		if (SortingPanel.userHouse.equals("GRYFFINDOR")) {
 			return "Our daring, nerve, and chivalry set us Gryffindors apart!";
 		} else if (SortingPanel.userHouse.equals("HUFFLEPUFF")) {
@@ -60,7 +60,7 @@ class HouseWelcomePanel extends GamePanel {
 		drawBackground(gTemp);
 	}
 
-	public void drawBackground(Graphics gTemp) {	
+	private void drawBackground(Graphics gTemp) {	
 		Image gryffindorImage = new ImageIcon("resources/Gryffindor.png").getImage();
 		Image gryffindorRedImage = new ImageIcon("resources/GryffindorRed.jpg").getImage();
 		Image ravenclawImage = new ImageIcon("resources/Ravenclaw.png").getImage();
@@ -69,12 +69,7 @@ class HouseWelcomePanel extends GamePanel {
 		Image hufflepuffYellowImage = new ImageIcon("resources/HufflepuffYellow.jpg").getImage();
 		Image slytherinImage = new ImageIcon("resources/Slytherin.png").getImage();
 		Image slytherinGreenImage = new ImageIcon("resources/SlytherinGreen.jpg").getImage();
-/*
-		Image houseImage = hufflepuffImage;
-		Image backgroundImage = slytherinGreenImage;
-		Color fontColour = Color.RED;
-		String houseName = "Ravenclaw";
-*/	 
+
 		Image houseImage = null;
 		Image backgroundImage = null;
 		Color fontColour = null;
@@ -102,8 +97,8 @@ class HouseWelcomePanel extends GamePanel {
 			houseName = "Slytherin";
 		} 
 
-		if (InitiationPanel.username == null) {
-			InitiationPanel.username = "He Who Must Not Be Named";
+		if (gameData.getUsername() == null) {
+			gameData.setUsername("He Who Must Not Be Named");
 		}
 
 		gTemp.drawImage(backgroundImage, 0, -100, 530, 400, this);
@@ -121,21 +116,21 @@ class HouseWelcomePanel extends GamePanel {
 		int xUsername;
 
 		boolean longName = false;
-		if (fm.stringWidth(InitiationPanel.username) / fm.stringWidth("a") > 15) {
+		if (fm.stringWidth(gameData.getUsername()) / fm.stringWidth("a") > 15) {
 			longName = true;
 			gTemp.setFont(new Font("TimesRoman", Font.ITALIC, 15));
 			FontMetrics fm2 = gTemp.getFontMetrics();
-			xUsername = 240 + 120 - fm2.stringWidth(InitiationPanel.username) / 2;
+			xUsername = 240 + 120 - fm2.stringWidth(gameData.getUsername()) / 2;
 		} else {
-			xUsername = 240 + 120 - fm.stringWidth(InitiationPanel.username) / 2;
+			xUsername = 240 + 120 - fm.stringWidth(gameData.getUsername()) / 2;
 		}
 
-		gTemp.drawString(InitiationPanel.username + "!", xUsername, 160);
+		gTemp.drawString(gameData.getUsername() + "!", xUsername, 160);
 	}
 
-	public void proceed() {
+	protected void proceed() {
 		super.proceed();
-		GuessWordPanel guessPanel = new GuessWordPanel();
+		GuessWordPanel guessPanel = new GuessWordPanel(gameData);
 		frame.add(guessPanel);
 		guessPanel.jbtGuessChar.requestFocus();
 	}

@@ -18,18 +18,18 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 
 class PlayAgainPanel extends GamePanel {
-	Graphics gTemp;
-	int paint = -1;
+	private Graphics gTemp;
+	private int paint = -1;
 	private Image parchmentImage = new ImageIcon("resources/Parchment.jpg").getImage();
-	JButton jbtHi;
-	JButton jbtPlayAgain;
-	JButton jbtQuit;
-	JButton jbtAwesome;
+	private JButton jbtHi;
+	private JButton jbtPlayAgain;
+	private JButton jbtQuit;
+	private JButton jbtAwesome;
 
-	public PlayAgainPanel() {
-		setLayout(null);
-
-		if (GuessWordPanel.allGuessed == true) {
+	PlayAgainPanel(GameData gameData) {
+		super(gameData);
+		
+		if (gameData.getAllGuessed() == true) {
 			paint = 0;
 			repaint();
 
@@ -46,7 +46,7 @@ class PlayAgainPanel extends GamePanel {
 			});					
 
 			add(jbtAwesome);
-		} else if (GuessWordPanel.allGuessed == false) {
+		} else {
 			paint = 1;
 			repaint();
 
@@ -92,7 +92,7 @@ class PlayAgainPanel extends GamePanel {
 		}
 	}
 
-	public void drawVoldemort(Graphics gTemp) {
+	private void drawVoldemort(Graphics gTemp) {
 		gTemp.setFont(new Font("TimesRoman", Font.BOLD, 20));
 		gTemp.drawImage(parchmentImage, 0, 0, this);
 
@@ -117,19 +117,19 @@ class PlayAgainPanel extends GamePanel {
 		gTemp.setFont(new Font("TimesRoman", Font.ITALIC, 30));
 		FontMetrics fm2 = gTemp.getFontMetrics();
 
-		int x4 = getWidth() / 2 - fm2.stringWidth(GuessWordPanel.chosenOne.getName()) / 2;
+		int x4 = getWidth() / 2 - fm2.stringWidth(gameData.getChosenOne().getName()) / 2;
 		int y4 = getHeight() / 2;
 
-		gTemp.drawString(GuessWordPanel.chosenOne.getName(), x4, y4);
+		gTemp.drawString(gameData.getChosenOne().getName(), x4, y4);
 	}
 
-	public void drawWow(Graphics gTemp) {
+	private void drawWow(Graphics gTemp) {
 		gTemp.setFont(new Font("TimesRoman", Font.ITALIC, 18));
 		gTemp.drawImage(parchmentImage, 0, 0, this);
 
-		String met = "It looks like you've already met " + GuessWordPanel.chosenOne.getName() + "!";
+		String met = "It looks like you've already met " + gameData.getChosenOne().getName() + "!";
 		String well = "Well done!";
-		GuessWordPanel.points++;
+		gameData.setPoints(gameData.getPoints() + 1);
 
 		FontMetrics fm = gTemp.getFontMetrics();
 
@@ -143,13 +143,13 @@ class PlayAgainPanel extends GamePanel {
 		gTemp.drawString(well, x2, y2);
 	}
 
-	public void drawPlayAgain(Graphics gTemp) {
+	private void drawPlayAgain(Graphics gTemp) {
 		Image characters = new ImageIcon("resources/Characters.jpg").getImage();
 		gTemp.drawImage(characters, 0, 0, 500, 300, this);
 
 		Border pointsBorder = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 5);
 
-		JLabel jlblPoints = new JLabel("Total points: " + GuessWordPanel.points);
+		JLabel jlblPoints = new JLabel("Total points: " + gameData.getPoints());
 		jlblPoints.setBorder(pointsBorder);
 		jlblPoints.setFont(new Font("TimesRoman", Font.ITALIC, 18));
 		jlblPoints.setBackground(Color.BLUE);
@@ -202,15 +202,15 @@ class PlayAgainPanel extends GamePanel {
 		add(jbtQuit);
 	}
 
-	public void playAgain() {
+	private void playAgain() {
 		JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
 		this.setVisible(false);
-		GuessWordPanel guessWordPanel = new GuessWordPanel();
+		GuessWordPanel guessWordPanel = new GuessWordPanel(gameData);
 		frame.add(guessWordPanel);
-		guessWordPanel.allGuessed = false;
+		gameData.setAllGuessed(false);
 	}
 
-	public void quit(Graphics gTemp) {
+	private void quit(Graphics gTemp) {
 		JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
 		frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
 	}

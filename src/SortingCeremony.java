@@ -20,11 +20,13 @@ public class SortingCeremony extends JFrame {
 	}
 
 	private void initUI() {
-		InitiationPanel initiationPanel = new InitiationPanel();
+		GameData gameData = new GameData();
+		InitiationPanel initiationPanel = new InitiationPanel(gameData);
 		add(initiationPanel);
 
 		setTitle("Harry Potter Hangman");
 		setSize(500, 300);
+		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 	}

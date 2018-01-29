@@ -12,13 +12,12 @@ import javax.swing.JButton;
 import javax.swing.JTextField;
 
 class InitiationPanel extends GamePanel {
-	Graphics gTemp;
-	JTextField jtfName;
-	public static String username;
-	String welcomeMessage = "Welcome to the Sorting Ceremony!";
+	private Graphics gTemp;
+	private JTextField jtfName;
+	private String welcomeMessage = "Welcome to the Sorting Ceremony!";
 
-	public InitiationPanel() {
-		setLayout(null);
+	InitiationPanel(GameData gameData) {
+		super(gameData);
 
 		jtfName = new JTextField("Please print your name");
 		jtfName.setBounds(145, 150, 194, 28);
@@ -54,14 +53,14 @@ class InitiationPanel extends GamePanel {
 		});
 	}
 	
-	public void getUsername(String name) {
-		username = name;
-		welcomeMessage = "Welcome, " + username + "!";
+	private void getUsername(String name) {
+		gameData.setUsername(name);
+		welcomeMessage = "Welcome, " + gameData.getUsername() + "!";
 	}
 
-	public void proceed() {
+	protected void proceed() {
 		super.proceed();
-		SortingPanel sortingPanel = new SortingPanel();
+		SortingPanel sortingPanel = new SortingPanel(gameData);
 		frame.add(sortingPanel);
 		sortingPanel.jbtOk.requestFocus();
 	}

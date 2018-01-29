@@ -9,7 +9,19 @@ import javax.swing.JTextField;
 class GuessWordPanel extends GamePanel {
 	private Graphics gTemp;
 	private Image parchmentImage = new ImageIcon("resources/Parchment.jpg").getImage();
-	public static GameCharacter chosenOne; 
+	public static final int INITIAL = 0;
+	public static final int BEFORE_GUESSING = 1;
+	public static final int WHILE_GUESSING = 2;
+	public static final int ALL_GUESSED = 3;
+	private int paintOption = INITIAL;
+	private JButton jbtOK;
+	protected JButton jbtGuessChar = new JButton("Guess anyone!");
+	private JButton jbtGuessMate = new JButton("Guess a Housemate!");
+	//JButton jbtGuessStud = new JButton("Guess a student!");
+	//JButton jbtGuessProf = new JButton("Guess a professor!");
+	private JButton jbtGuessQuid = new JButton("Guess a Quidditch player!");
+	private JButton jbtProceed = new JButton();
+	
 	private String word;
 	private int wordLength;
 	private int spaceIdx;
@@ -19,35 +31,13 @@ class GuessWordPanel extends GamePanel {
 	private boolean guessed;
 	private int totalGuesses;
 	private int wrongGuesses;
-	public static final int INITIAL = 0;
-	public static final int BEFORE_GUESSING = 1;
-	public static final int WHILE_GUESSING = 2;
-	public static final int ALL_GUESSED = 3;
-	private int paintOption = INITIAL;
-	JButton jbtOK;
-	JButton jbtGuessChar = new JButton("Guess anyone!");
-	JButton jbtGuessMate = new JButton("Guess a Housemate!");
-	//JButton jbtGuessStud = new JButton("Guess a student!");
-	//JButton jbtGuessProf = new JButton("Guess a professor!");
-	JButton jbtGuessQuid = new JButton("Guess a Quidditch player!");
 	private String guess;
-	private int guessIdx;
 	private String message;
 	private boolean guessesLeft = true;
-	public static boolean allGuessed = false;
-	public static int points = 0;
-	public static int guessMode = 0;
-	public static final int GUESS_CHARACTER = 0;
-	public static final int GUESS_HOUSEMATE = 1;
-	//public static final int GUESS_STUDENT = 2;
-	//public static final int GUESS_PROFESSOR = 3;
-	public static final int GUESS_QUIDDITCHPLAYER = 4;
-	JButton jbtProceed = new JButton();
-	int idx = 0;
-	boolean repeatedGuess = false;
+	private boolean repeatedGuess = false;
 
-	public GuessWordPanel() {
-		setLayout(null);
+	GuessWordPanel(GameData gameData) {
+		super(gameData);
 
 		jbtGuessChar.setBounds(172, 135, 160, 31);
 		jbtGuessMate.setBounds(150, 180, 196, 31);
@@ -173,7 +163,7 @@ class GuessWordPanel extends GamePanel {
 		}
 	}
 
-	public void drawBackground(Graphics gTemp) {
+	private void drawBackground(Graphics gTemp) {
 		gTemp.setFont(new Font("TimesRoman", Font.ITALIC, 20));
 
 		String time = "Time to meet everyone!";
@@ -189,7 +179,7 @@ class GuessWordPanel extends GamePanel {
 		gTemp.drawString(alreadyKnow, x2, y2);
 	}
 
-	public void vanishButtons() {
+	private void vanishButtons() {
 		jbtGuessChar.setVisible(false);
 		jbtGuessMate.setVisible(false);
 		//jbtGuessStud.setVisible(false);
@@ -197,9 +187,9 @@ class GuessWordPanel extends GamePanel {
 		jbtGuessQuid.setVisible(false);
 	}
 	
-	public void getWord() {
-		chosenOne = getChosenOne();
-		word = chosenOne.getName().toUpperCase();
+	private void getWord() {
+		gameData.setChosenOne(gameData.determineChosenOne());
+		word = gameData.getChosenOne().getName().toUpperCase();
 		wordLength = word.length();
 		letters = new Letter[wordLength];
 		
@@ -214,16 +204,16 @@ class GuessWordPanel extends GamePanel {
 		}
 	}
 	
-	public void guessCharPressed() {
-		guessMode = GUESS_CHARACTER;
+	private void guessCharPressed() {
+		gameData.setGuessMode(gameData.GUESS_CHARACTER);
 		getWord();
 		vanishButtons();
 		paintOption = BEFORE_GUESSING;
 		repaint();
 	}
 	
-	public void guessMatePressed() {
-		guessMode = GUESS_HOUSEMATE;
+	private void guessMatePressed() {
+		gameData.setGuessMode(gameData.GUESS_HOUSEMATE);
 		getWord();
 		vanishButtons();
 		paintOption = BEFORE_GUESSING;
@@ -246,22 +236,22 @@ class GuessWordPanel extends GamePanel {
 		repaint();		
 	}
 */
-	public void guessQuidPressed() {
-		guessMode = GUESS_QUIDDITCHPLAYER;
+	private void guessQuidPressed() {
+		gameData.setGuessMode(gameData.GUESS_QUIDDITCHPLAYER);
 		getWord();
 		vanishButtons();
 		paintOption = BEFORE_GUESSING;
 		repaint();
 	}
 	
-	public void drawPrompt(Graphics gTemp) {
+	private void drawPrompt(Graphics gTemp) {
 		gTemp.setFont(new Font("TimesRoman", Font.ITALIC, 20));
 
 		drawGuessMessage();
 		drawLetterSlots();	
 	}
 	
-	public void drawPromptInteraction(Graphics gTemp) {
+	private void drawPromptInteraction(Graphics gTemp) {
 		JTextField jtfGuess = new JTextField();
 		JButton jbtGuess = new JButton();
 		
@@ -271,17 +261,17 @@ class GuessWordPanel extends GamePanel {
 		jtfGuess.requestFocus();
 	}
 	
-	public void drawGuessMessage() {
+	private void drawGuessMessage() {
 		FontMetrics fm = gTemp.getFontMetrics();
 		
-		String guess = "Can you guess the name of this young " + GuessWordPanel.chosenOne.getGender() + "?";
+		String guess = "Can you guess the name of this young " + gameData.getChosenOne().getGender() + "?";
 		int x1 = 250 - fm.stringWidth(guess) / 2;
 		int y1 = 65;
 
 		gTemp.drawString(guess, x1, y1);
 	}
 	
-	public void drawLetterSlots() {
+	private void drawLetterSlots() {
 		int x2 = 500 / 2 - 19 * wordLength + 9 * (wordLength - 1) / 2 + 8;
 		int y2 = 136;		
 
@@ -298,7 +288,7 @@ class GuessWordPanel extends GamePanel {
 		}
 	}
 	
-	public void addGuessTextfield(JTextField jtfGuess) {
+	private void addGuessTextfield(JTextField jtfGuess) {
 		jtfGuess.setText("Enter your guess here!");
 		jtfGuess.setBounds(100, 230, 200, 30);
 		
@@ -315,7 +305,7 @@ class GuessWordPanel extends GamePanel {
 		});
 	}
 	
-	public void addGuessButton(JButton jbtGuess, JTextField jtfGuess) {
+	private void addGuessButton(JButton jbtGuess, JTextField jtfGuess) {
 		jbtGuess.setText("Guess!");
 		jbtGuess.setBounds(300, 230, 100, 30);
 
@@ -330,7 +320,7 @@ class GuessWordPanel extends GamePanel {
 		});
 	}
 	
-	public void addProceedButton() {
+	private void addProceedButton() {
 		jbtProceed.setText("I know I am");
 		jbtProceed.setBounds(240, 160, 139, 27);
 		
@@ -344,7 +334,7 @@ class GuessWordPanel extends GamePanel {
 		});
 	}
 
-	public void updateGuessedBank(Character c) {
+	private void updateGuessedBank(Character c) {
 		int i;
 		
 		for (i = 0; i < guessedBank.size(); i++) {
@@ -359,7 +349,7 @@ class GuessWordPanel extends GamePanel {
 		}
 	}
 	
-	public void verifyGuess() {
+	private void verifyGuess() {
 		totalGuesses++;
 		guessed = false;
 		guess = guess.toUpperCase();
@@ -368,7 +358,7 @@ class GuessWordPanel extends GamePanel {
 				letters[i].setGuessed(true);
 			}
 			message = "Impressive!";
-			allGuessed = true;
+			gameData.setAllGuessed(true);
 	
 			paintOption = ALL_GUESSED;
 			repaint();
@@ -404,7 +394,7 @@ class GuessWordPanel extends GamePanel {
 		}
 	}
 
-	public void checkAllGuessed() {
+	private void checkAllGuessed() {
 		int j;
 		for (j = 0; j < wordLength; j++) {
 			if (letters[j].getGuessed() == false && j != spaceIdx) {
@@ -413,16 +403,16 @@ class GuessWordPanel extends GamePanel {
 		}
 
 		if (j == wordLength) {
-			allGuessed = true;
+			gameData.setAllGuessed(true);
 			proceed();
 		}
 	} 
 
-	public void drawGuessedLetters(Graphics gTemp) {
+	private void drawGuessedLetters(Graphics gTemp) {
 		FontMetrics fm = gTemp.getFontMetrics();
 		int x1 = getWidth() / 2 - fm.stringWidth(message) / 2;
 		
-		if (allGuessed) {
+		if (gameData.getAllGuessed()) {
 			x1 -= 80;
 		}
 
@@ -437,17 +427,17 @@ class GuessWordPanel extends GamePanel {
 		}
 	}
 
-	public void drawHint(Graphics gTemp) {
+	private void drawHint(Graphics gTemp) {
 		gTemp.setFont(new Font("TimesRoman", Font.ITALIC, 16));
 		FontMetrics fm = gTemp.getFontMetrics();
 		
-		String hintMessage = ((Student) chosenOne).getQuidditchHint();
+		String hintMessage = ((Student) gameData.getChosenOne()).getQuidditchHint();
 		int x1 = getWidth() / 2 - fm.stringWidth(hintMessage) / 2;
 		
 		gTemp.drawString(hintMessage, x1, 100);
 	}
 	
-	public void drawWrongGuesses(Graphics gTemp) {
+	private void drawWrongGuesses(Graphics gTemp) {
 		int x = 136;
 		int y = 217;
 		for (int i = 0; i < wrongGuessedBank.size(); i++) {
@@ -506,13 +496,13 @@ class GuessWordPanel extends GamePanel {
 		}	
 	}
 
-	public void proceed() {
+	protected void proceed() {
 		super.proceed();
-		PlayAgainPanel playAgainPanel = new PlayAgainPanel();
+		PlayAgainPanel playAgainPanel = new PlayAgainPanel(gameData);
 		frame.add(playAgainPanel);
 	}	
 
-	public GameCharacter getChosenOne() {
+	private GameCharacter getChosenOne() {
 		ArrayList<GameCharacter> characterBank = new ArrayList<GameCharacter>();
 		GameCharacter cChang = new QuidditchPlayer("Cho Chang", "Ravenclaw", "witch", 2, "Seeker");
 		characterBank.add(cChang);
@@ -594,21 +584,21 @@ class GuessWordPanel extends GamePanel {
 			}
 		}
 
-		if (guessMode == GUESS_CHARACTER) {
+		if (gameData.getGuessMode() == gameData.GUESS_CHARACTER) {
 			return characterBank.get((int) (Math.random() * characterBank.size()));
-		} else if (guessMode == GUESS_HOUSEMATE) {
-			if (SortingPanel.userHouse.equals("GRYFFINDOR")) {
+		} else if (gameData.getGuessMode() == gameData.GUESS_HOUSEMATE) {
+			if (gameData.getUserHouse().equals("GRYFFINDOR")) {
 				return gryffindorBank.get((int) (Math.random() * gryffindorBank.size()));
-			} else if (SortingPanel.userHouse.equals("HUFFLEPUFF")) {
+			} else if (gameData.getUserHouse().equals("HUFFLEPUFF")) {
 				return hufflepuffBank.get((int) (Math.random() * hufflepuffBank.size()));
-			} else if (SortingPanel.userHouse.equals("RAVENCLAW")) {
+			} else if (gameData.getUserHouse().equals("RAVENCLAW")) {
 				return ravenclawBank.get((int) (Math.random() * ravenclawBank.size()));
-			} else if (SortingPanel.userHouse.equals("SLYTHERIN")) {
+			} else if (gameData.getUserHouse().equals("SLYTHERIN")) {
 				return slytherinBank.get((int) (Math.random() * slytherinBank.size()));
 			} else {
 				return characterBank.get(0);
 			}
-		} else if (guessMode == GUESS_QUIDDITCHPLAYER) {
+		} else if (gameData.getGuessMode() == gameData.GUESS_QUIDDITCHPLAYER) {
 			return quidditchBank.get((int) (Math.random() * quidditchBank.size()));
 		} else {
 			return characterBank.get(0);
