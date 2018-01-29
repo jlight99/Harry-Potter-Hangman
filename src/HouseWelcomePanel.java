@@ -19,7 +19,7 @@ class HouseWelcomePanel extends GamePanel {
 		setLayout(null);		
 
 		jbtMotto.setText(getMotto());
-		jbtMotto.setBounds(29, 274, 435, 25);
+		jbtMotto.setBounds(29, 254, 435, 25);
 		jbtMotto.setOpaque(false);
 
 		add(jbtMotto);

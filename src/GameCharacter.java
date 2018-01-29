@@ -3,10 +3,10 @@ class GameCharacter {
 	private String house;
 	private String gender;
 
-	GameCharacter(String n, String h, String g) {
-		name = n;
-		house = h;
-		gender = g;
+	GameCharacter(String name, String house, String gender) {
+		this.name = name;
+		this.house = house;
+		this.gender = gender;
 	}
 
 	String getName() {
