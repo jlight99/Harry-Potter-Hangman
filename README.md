@@ -4,7 +4,7 @@ A Harry Potter-themed adventure in which the user is Sorted into one of the four
 ## Installation
 To play the game, first clone the .jar file:
 
-`$ git clone https://github.com/jlight99/Harry-Potter-Hangman/blob/master/HarryPotterHangman.jar`
+`$ git clone https://github.com/jlight99/Harry-Potter-Hangman`
 
 Then, simply enter the following to run:
 

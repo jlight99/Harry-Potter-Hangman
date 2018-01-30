@@ -5,22 +5,25 @@ import javax.swing.border.Border;
 import java.util.*;
 
 public class SortingCeremony extends JFrame {
+	private GameData gameData;
+
 	public static void main(String[] args) {
+		final GameData gameData = new GameData();
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				SortingCeremony game = new SortingCeremony();
+				SortingCeremony game = new SortingCeremony(gameData);
 				game.setVisible(true);
 			}
 		});
 	}
 
-	public SortingCeremony() {
+	public SortingCeremony(GameData gameData) {
+		this.gameData = gameData;
 		initUI();
 	}
 
 	private void initUI() {
-		GameData gameData = new GameData();
 		InitiationPanel initiationPanel = new InitiationPanel(gameData);
 		add(initiationPanel);
 
