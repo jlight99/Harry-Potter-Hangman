@@ -6,6 +6,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 
+import java.sql.*;
+
 class GuessWordPanel extends GamePanel {
 	private Graphics gTemp;
 	private Image parchmentImage = new ImageIcon("resources/Parchment.jpg").getImage();
@@ -163,6 +165,122 @@ class GuessWordPanel extends GamePanel {
 		}
 	}
 
+	private GameCharacter getCharacter() {
+		GameCharacter chosenOne = null;
+
+		try {
+			if (gameData.getGuessMode() == gameData.GUESS_CHARACTER) {
+				chosenOne = new Student();
+
+				Statement stmt = gameData.getConnection().createStatement();
+				String sql_getRandChar = 
+				"SELECT id, last, first, house, gender " +
+				"FROM Students ORDER BY RAND() LIMIT 1";
+				ResultSet rs_getRandChar = stmt.executeQuery(sql_getRandChar);
+
+				while (rs_getRandChar.next()) {
+					int randCharID = rs_getRandChar.getInt("id");
+					String randCharLast = rs_getRandChar.getString("last");
+					String randCharFirst = rs_getRandChar.getString("first");
+					String randCharHouse = rs_getRandChar.getString("house");
+					String randCharGender = rs_getRandChar.getString("gender");
+
+					chosenOne.setName(randCharFirst, randCharLast);
+					chosenOne.setHouse(randCharHouse);
+					chosenOne.setGender(randCharGender);
+				}
+
+				rs_getRandChar.close();
+
+				stmt.close();
+				gameData.getConnection().close();
+			} else if (gameData.getGuessMode() == gameData.GUESS_HOUSEMATE) {
+				chosenOne = new Student();
+
+				PreparedStatement pstmt = null;
+				String sql_getHouseChar = 
+				"SELECT id, last, first, house, gender " + 
+				"FROM Students " + 
+				"WHERE house=? ORDER BY RAND() LIMIT 1";
+				pstmt = gameData.getConnection().prepareStatement(sql_getHouseChar);
+				pstmt.setString(1, gameData.getUserHouse());
+				ResultSet rs_getHouseChar = pstmt.executeQuery();
+
+				while (rs_getHouseChar.next()) {
+					int houseCharID = rs_getHouseChar.getInt("id");
+					String houseCharLast = rs_getHouseChar.getString("last");
+					String houseCharFirst = rs_getHouseChar.getString("first");
+					String houseCharHouse = rs_getHouseChar.getString("house");
+					String houseCharGender = rs_getHouseChar.getString("gender");
+
+					chosenOne.setName(houseCharFirst, houseCharLast);
+					chosenOne.setHouse(houseCharHouse);
+					chosenOne.setGender(houseCharGender);
+				}
+
+				rs_getHouseChar.close();
+
+				pstmt.close();
+				gameData.getConnection().close();
+			} else if (gameData.getGuessMode() == gameData.GUESS_QUIDDITCHPLAYER) {
+				chosenOne = new QuidditchPlayer();
+
+				Statement stmt = gameData.getConnection().createStatement();
+				String sql_getQuidChar =
+				"SELECT s.id, s.last, s.first, s.house, s.gender, q.position " +
+				"FROM Students s, QuidditchPlayers q " + 
+				"WHERE s.id = q.id ORDER BY RAND() LIMIT 1";
+				ResultSet rs_getQuidChar = stmt.executeQuery(sql_getQuidChar);
+
+				while (rs_getQuidChar.next()) {
+					int quidCharID = rs_getQuidChar.getInt("id");
+					String quidCharLast = rs_getQuidChar.getString("last");
+					String quidCharFirst = rs_getQuidChar.getString("first");
+					String quidCharHouse = rs_getQuidChar.getString("house");
+					String quidCharGender = rs_getQuidChar.getString("gender");
+					String quidCharPosition = rs_getQuidChar.getString("position");
+
+					chosenOne.setName(quidCharFirst, quidCharLast);
+					chosenOne.setHouse(quidCharHouse);
+					chosenOne.setGender(quidCharGender);
+					((QuidditchPlayer) chosenOne).setQuidPosition(quidCharPosition);
+				}
+
+				rs_getQuidChar.close();
+			} else {
+				return chosenOne;
+			}
+
+		} catch (SQLException se) {
+			se.printStackTrace();
+			try {
+				gameData.getConnection().close();
+			} catch (SQLException se1) {
+				se1.printStackTrace();
+				System.exit(1);
+			}
+		System.exit(1);
+		} catch (Exception e) {
+			e.printStackTrace();
+			try {
+				gameData.getConnection().close();
+			} catch (SQLException se1) {
+				se1.printStackTrace();
+				System.exit(1);
+			}
+			System.exit(1);
+		} finally {
+			try {
+				if (gameData.getConnection() != null) {
+					gameData.getConnection().close();
+				}
+			} catch (SQLException se2) {
+				se2.printStackTrace();
+			}
+		}
+		return chosenOne;
+	}
+
 	private void drawBackground(Graphics gTemp) {
 		gTemp.setFont(new Font("TimesRoman", Font.ITALIC, 20));
 
@@ -188,7 +306,8 @@ class GuessWordPanel extends GamePanel {
 	}
 	
 	private void getWord() {
-		gameData.setChosenOne(gameData.determineChosenOne());
+		gameData.setChosenOne(getCharacter());
+//		gameData.setChosenOne(gameData.determineChosenOne());
 		word = gameData.getChosenOne().getName().toUpperCase();
 		wordLength = word.length();
 		letters = new Letter[wordLength];
