@@ -22,7 +22,6 @@ class SortingPanel extends GamePanel {
 	private int paintOption = INITIAL;
 	protected JButton jbtOk;
 	private String choice;
-	public static String userHouse;//hmmmmmmmmmmm
 
 	SortingPanel(GameData gameData) {
 		super(gameData);
@@ -57,19 +56,19 @@ class SortingPanel extends GamePanel {
 			public void keyPressed(KeyEvent e) {
 				char code = (e.getKeyChar() + "").toUpperCase().charAt(0);
 				if (code == 'G') {
-					userHouse = "GRYFFINDOR";
+					gameData.setUserHouse("GRYFFINDOR");
 				} else if (code == 'H') {
-					userHouse = "HUFFLEPUFF";
+					gameData.setUserHouse("HUFFLEPUFF");
 				} else if (code == 'R') {
-					userHouse = "RAVENCLAW";
+					gameData.setUserHouse("RAVENCLAW");
 				} else if (code == 'S') {
-					userHouse = "SLYTHERIN";
+					gameData.setUserHouse("SLYTHERIN");
 				} else if (code == '?') {
 					setPaintOption(HAT);
 					repaint();
 				}
 			
-				if (userHouse != null) {
+				if (gameData.getUserHouse() != null) {
 					proceed();
 				}
 			}
@@ -86,19 +85,19 @@ class SortingPanel extends GamePanel {
 					SortingPanel.this.repaint();
 				} else if (x >= 260 && x < 355) {
 					if (y >= 20 && y <= 115) {
-						userHouse = "GRYFFINDOR";
+						gameData.setUserHouse("GRYFFINDOR");
 					} else if (y >= 125 && y <= 235) {
-						userHouse = "HUFFLEPUFF";
+						gameData.setUserHouse("HUFFLEPUFF");
 					}
 				} else if (x > 355 && x <= 460) {
 					if (y >= 20 && y <= 115) {
-						userHouse = "SLYTHERIN";
+						gameData.setUserHouse("SLYTHERIN");
 					} else if (y >= 125 && y <= 235) {
-						userHouse = "RAVENCLAW";
+						gameData.setUserHouse("RAVENCLAW");
 					}
 				}
 
-				if (userHouse != null) {
+				if (gameData.getUserHouse() != null) {
 					proceed();
 				}
 			}
@@ -189,14 +188,14 @@ class SortingPanel extends GamePanel {
 		Image speechBubbleImage = new ImageIcon("resources/SpeechBubble.png").getImage();
 		gTemp.drawImage(speechBubbleImage, 129, 20, 300, 200, this);
 
-		userHouse = getHouse();
+		gameData.setUserHouse(getHouse());
 
 		FontMetrics fm = gTemp.getFontMetrics();
-		int x = 137 + (400 - 180) / 2 - fm.stringWidth(userHouse + "!") / 2;
+		int x = 137 + (400 - 180) / 2 - fm.stringWidth(gameData.getUserHouse() + "!") / 2;
 		int y = 120;
 
 		gTemp.setFont(new Font("TimesRoman", Font.BOLD, 24));
-		gTemp.drawString(userHouse + "!", x, y);
+		gTemp.drawString(gameData.getUserHouse() + "!", x, y);
 	}
 	
 	private void addPartyButton(JButton jbtParty) {
