@@ -40,13 +40,13 @@ class HouseWelcomePanel extends GamePanel {
 	}
 	
 	private String getMotto() {
-		if (SortingPanel.userHouse.equals("GRYFFINDOR")) {
+		if (gameData.getUserHouse().equals("GRYFFINDOR")) {
 			return "Our daring, nerve, and chivalry set us Gryffindors apart!";
-		} else if (SortingPanel.userHouse.equals("HUFFLEPUFF")) {
+		} else if (gameData.getUserHouse().equals("HUFFLEPUFF")) {
 			return "Us Hufflepuffs are just and loyal and unafraid of toil!";
-		} else if (SortingPanel.userHouse.equals("RAVENCLAW")) {
+		} else if (gameData.getUserHouse().equals("RAVENCLAW")) {
 			return "Wit beyond measure is man's greatest treasure!";
-		} else if (SortingPanel.userHouse.equals("SLYTHERIN")) {
+		} else if (gameData.getUserHouse().equals("SLYTHERIN")) {
 			return "We Slytherins use any means to achieve our ends!";
 		} else {
 			return "Invalid user house";
@@ -75,22 +75,22 @@ class HouseWelcomePanel extends GamePanel {
 		Color fontColour = null;
 		String houseName = null;
 		
-		if (SortingPanel.userHouse.equals("GRYFFINDOR")) {
+		if (gameData.getUserHouse().equals("GRYFFINDOR")) {
 			houseImage = gryffindorImage;
 			backgroundImage = gryffindorRedImage;
 			fontColour = new Color(218, 165, 32); 
 			houseName = "Gryffindor";
-		} else if (SortingPanel.userHouse.equals("HUFFLEPUFF")) {
+		} else if (gameData.getUserHouse().equals("HUFFLEPUFF")) {
 			houseImage = hufflepuffImage; 
 			backgroundImage = hufflepuffYellowImage;
 			fontColour = Color.BLACK;
 			houseName = "Hufflepuff";
-		} else if (SortingPanel.userHouse.equals("RAVENCLAW")) {
+		} else if (gameData.getUserHouse().equals("RAVENCLAW")) {
 			houseImage = ravenclawImage;
 			backgroundImage = ravenclawBlueImage;
 			fontColour = new Color(184, 115, 51);
 			houseName = "Ravenclaw";	
-		} else if (SortingPanel.userHouse.equals("SLYTHERIN")) {
+		} else if (gameData.getUserHouse().equals("SLYTHERIN")) {
 			houseImage = slytherinImage;
 			backgroundImage = slytherinGreenImage;
 			fontColour = Color.LIGHT_GRAY;
