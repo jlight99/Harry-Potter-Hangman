@@ -1,6 +1,9 @@
 class Student extends GameCharacter {
 	private int year;
 
+	public Student() {
+	}
+
 	public Student(String name, String house, String gender, int year) {
 		super(name, house, gender);
 		this.year = year;
